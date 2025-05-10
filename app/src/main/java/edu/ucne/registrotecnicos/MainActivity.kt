@@ -33,7 +33,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -246,17 +245,5 @@ class MainActivity : ComponentActivity() {
     }
     private suspend fun saveTecnico(tecnico: TecnicoEntity) {
         tecnicoDb.tecnicoDao().save(tecnico)
-    }
-
-    @Preview(showBackground = true, showSystemUi = true)
-    @Composable
-    fun Preview() {
-        RegistroTecnicosTheme {
-            val tecnicoList = listOf(
-                TecnicoEntity(1, "Enel ewsd4444444444", "Impresora"),
-                TecnicoEntity(2, "Juan", "Cable de red"),
-            )
-            TecnicoListScreen(tecnicoList)
-        }
     }
 }
