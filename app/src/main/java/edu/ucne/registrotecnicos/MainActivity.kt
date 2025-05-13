@@ -166,6 +166,8 @@ class MainActivity : ComponentActivity() {
                     .padding(innerPadding)
                     .padding(8.dp)
             ) {
+                Spacer(modifier = Modifier.height(32.dp))
+                Text("Registro de Tecnicos")
                 ElevatedCard(
                     modifier = Modifier.fillMaxWidth()
                 ) {
