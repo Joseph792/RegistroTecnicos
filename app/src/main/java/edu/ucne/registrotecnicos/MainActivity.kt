@@ -33,20 +33,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.room.Dao
-import androidx.room.Database
-import androidx.room.Delete
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-import androidx.room.Query
 import androidx.room.Room
-import androidx.room.RoomDatabase
-import androidx.room.Upsert
+import edu.ucne.registrotecnicos.data.local.database.TecnicoDb
+import edu.ucne.registrotecnicos.data.local.entities.TecnicoEntity
 import edu.ucne.registrotecnicos.ui.theme.RegistroTecnicosTheme
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
@@ -65,6 +59,8 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             RegistroTecnicosTheme {
+
+
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     Column(
                         modifier = Modifier
@@ -79,84 +75,10 @@ class MainActivity : ComponentActivity() {
     }
 
     @Composable
-    fun TecnicoListScreen(tecnicoList: List<TecnicoEntity>) {
-        Column(
-            modifier = Modifier.fillMaxSize()
-        ) {
-            Spacer(modifier = Modifier.height(32.dp))
-            Text("Lista de tecnicos")
-            LazyColumn(
-                modifier = Modifier.fillMaxSize()
-            ) {
-                items(tecnicoList) {
-                    TecnicoRow(it)
-                }
-            }
-        }
-    }
-
-    @Composable
-    private fun TecnicoRow(it: TecnicoEntity) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(modifier = Modifier.weight(1f), text = it.tecnicoId.toString())
-            Text(
-                modifier = Modifier.weight(2f),
-                text = it.nombre,
-                style = MaterialTheme.typography.headlineLarge
-            )
-            Text(modifier = Modifier.weight(2f), text = it.sueldo)
-        }
-        HorizontalDivider()
-    }
-
-    @Entity(tableName = "Tecnicos")
-    data class TecnicoEntity(
-        @PrimaryKey
-        val tecnicoId: Int? = null,
-        val nombre: String = "",
-        val sueldo: String = ""
-    )
-
-    @Dao
-    interface TecnicoDao {
-        @Upsert()
-        suspend fun save(tecnico: TecnicoEntity)
-
-        @Query(
-            """
-        SELECT * 
-        FROM Tecnicos 
-        WHERE tecnicoId=:id  
-        LIMIT 1
-        """
-        )
-        suspend fun find(id: Int): TecnicoEntity?
-
-        @Delete
-        suspend fun delete(tecnico: TecnicoEntity)
-
-        @Query("SELECT * FROM Tecnicos")
-        fun getAll(): Flow<List<TecnicoEntity>>
-    }
-
-    @Database(
-        entities = [
-            TecnicoEntity::class
-        ],
-        version = 1,
-        exportSchema = false
-    )
-    abstract class TecnicoDb : RoomDatabase() {
-        abstract fun tecnicoDao(): TecnicoDao
-    }
-
-    @Composable
     fun TecnicoScreen(
     ) {
-        var nombre: String by remember { mutableStateOf("") }
-        var sueldo: String by remember { mutableStateOf("") }
+        var nombre by remember { mutableStateOf("") }
+        var sueldo by remember { mutableStateOf("") }
         var errorMessage: String? by remember { mutableStateOf(null) }
 
         Scaffold { innerPadding ->
@@ -166,8 +88,6 @@ class MainActivity : ComponentActivity() {
                     .padding(innerPadding)
                     .padding(8.dp)
             ) {
-                Spacer(modifier = Modifier.height(32.dp))
-                Text("Registro de Tecnicos")
                 ElevatedCard(
                     modifier = Modifier.fillMaxWidth()
                 ) {
@@ -203,7 +123,7 @@ class MainActivity : ComponentActivity() {
                             ) {
                                 Icon(
                                     imageVector = Icons.Default.Add,
-                                    contentDescription = "new button"
+                                    contentDescription = "save button"
                                 )
                                 Text(text = "Nuevo")
                             }
@@ -234,6 +154,7 @@ class MainActivity : ComponentActivity() {
                         }
                     }
                 }
+
                 val lifecycleOwner = androidx.lifecycle.compose.LocalLifecycleOwner.current
                 val tecnicoList by tecnicoDb.tecnicoDao().getAll()
                     .collectAsStateWithLifecycle(
@@ -245,7 +166,54 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+
+    @Composable
+    fun TecnicoListScreen(tecnicoList: List<TecnicoEntity>) {
+        Column(
+            modifier = Modifier.fillMaxSize()
+        ) {
+            Spacer(modifier = Modifier.height(32.dp))
+            Text("Lista de tecnicos")
+
+            LazyColumn(
+                modifier = Modifier.fillMaxSize()
+            ) {
+                items(tecnicoList) {
+                    TecnicoRow(it)
+                }
+            }
+        }
+    }
+
+    @Composable
+    private fun TecnicoRow(it: TecnicoEntity) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(modifier = Modifier.weight(1f), text = it.tecnicoId.toString())
+            Text(
+                modifier = Modifier.weight(2f),
+                text = it.nombre,
+                style = MaterialTheme.typography.headlineLarge
+            )
+            Text(modifier = Modifier.weight(2f), text = it.sueldo)
+        }
+        HorizontalDivider()
+    }
+
     private suspend fun saveTecnico(tecnico: TecnicoEntity) {
         tecnicoDb.tecnicoDao().save(tecnico)
+    }
+
+    @Preview(showBackground = true, showSystemUi = true)
+    @Composable
+    fun Preview() {
+        RegistroTecnicosTheme {
+            val tecnicoList = listOf(
+                TecnicoEntity(1, "Joseph Camilo", "10,000"),
+                TecnicoEntity(2, "Victor Estevez", "20,000"),
+            )
+            TecnicoListScreen(tecnicoList)
+        }
     }
 }
