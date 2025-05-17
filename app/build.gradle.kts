@@ -49,7 +49,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.9.0")
 
     //navegacion
-    implementation("androidx.navigation:navigation-compose:2.9.0")
+    implementation(libs.androidx.navigation.compose)
     implementation(libs.kotlin.serialization.json)
 
     //room
