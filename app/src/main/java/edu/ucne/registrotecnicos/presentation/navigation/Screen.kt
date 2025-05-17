@@ -6,5 +6,5 @@ sealed class Screen {
     @Serializable
     data object TecnicoList : Screen()
     @Serializable
-    data class Tenico(val tecnicoId: Int) : Screen()
+    data class Tecnico(val tecnicoId: Int?) : Screen()
 }
