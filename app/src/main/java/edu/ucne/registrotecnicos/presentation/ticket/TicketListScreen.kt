@@ -1,4 +1,4 @@
-package edu.ucne.registrotecnicos.presentation.tecnico
+package edu.ucne.registrotecnicos.presentation.ticket
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -24,20 +24,22 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import edu.ucne.registrotecnicos.data.local.entities.TecnicoEntity
-
+import edu.ucne.registrotecnicos.data.local.entities.TicketEntity
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TecnicoListScreen(
-    tecnicoList: List<TecnicoEntity>,
+fun TicketListScreen(
+    ticketList: List<TicketEntity>,
     onEdit: (Int?) -> Unit,
-    onDelete: (TecnicoEntity) -> Unit
+    onDelete: (TicketEntity) -> Unit
 ) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Lista de técnicos") })
+                title = { Text("Lista de tickets") })
         },
         floatingActionButton = {
             FloatingActionButton(onClick = { onEdit(0) }) {
@@ -52,8 +54,8 @@ fun TecnicoListScreen(
                 .padding(padding)
         ) {
             LazyColumn(modifier = Modifier.fillMaxWidth()) {
-                items(tecnicoList) { tecnico ->
-                    TecnicoRow(tecnico, { onEdit(tecnico.tecnicoId) }, { onDelete(tecnico) })
+                items(ticketList) { ticket ->
+                    TicketRow(ticket, { onEdit(ticket.ticketId) }, { onDelete(ticket) })
                 }
             }
         }
@@ -61,8 +63,8 @@ fun TecnicoListScreen(
 }
 
 @Composable
-private fun TecnicoRow(
-    tecnico: TecnicoEntity,
+private fun TicketRow(
+    ticket: TicketEntity,
     onEdit: () -> Unit,
     onDelete: () -> Unit
 ) {
@@ -72,14 +74,16 @@ private fun TecnicoRow(
             .fillMaxWidth()
             .padding(vertical = 8.dp)
     ) {
-        Text(modifier = Modifier.weight(1f), text = tecnico.tecnicoId.toString(), color = Color.Black)
+        Text(modifier = Modifier.weight(1f), text = ticket.ticketId.toString(), color = Color.Black)
         Text(
             modifier = Modifier.weight(2f),
-            text = tecnico.nombre,
+            text = ticket.fecha.toFormattedString(),
             style = MaterialTheme.typography.titleMedium,
             color = Color.Black
         )
-        Text(modifier = Modifier.weight(2f), text = tecnico.sueldo.toString(), color = Color.Black)
+
+        Text(modifier = Modifier.weight(2f), text = ticket.descripcion, color = Color.Black)
+
         IconButton(onClick = onEdit) {
             Icon(Icons.Default.Edit, contentDescription = "Editar", tint = MaterialTheme.colorScheme.primary)
         }
@@ -89,4 +93,8 @@ private fun TecnicoRow(
 
     }
     HorizontalDivider()
+}
+fun Date.toFormattedString(): String {
+    val format = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
+    return format.format(this)
 }

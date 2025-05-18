@@ -1,4 +1,4 @@
-package edu.ucne.registrotecnicos.presentation.tecnico
+package edu.ucne.registrotecnicos.presentation.prioridad
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -23,21 +23,23 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import edu.ucne.registrotecnicos.data.local.entities.PrioridadEntity
 import edu.ucne.registrotecnicos.data.local.entities.TecnicoEntity
-
+import edu.ucne.registrotecnicos.ui.theme.RegistroTecnicosTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TecnicoListScreen(
-    tecnicoList: List<TecnicoEntity>,
+fun PrioridadListScreen(
+    prioridadList: List<PrioridadEntity>,
     onEdit: (Int?) -> Unit,
-    onDelete: (TecnicoEntity) -> Unit
+    onDelete: (PrioridadEntity) -> Unit
 ) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Lista de técnicos") })
+                title = { Text("Lista de Prioridades") })
         },
         floatingActionButton = {
             FloatingActionButton(onClick = { onEdit(0) }) {
@@ -52,8 +54,8 @@ fun TecnicoListScreen(
                 .padding(padding)
         ) {
             LazyColumn(modifier = Modifier.fillMaxWidth()) {
-                items(tecnicoList) { tecnico ->
-                    TecnicoRow(tecnico, { onEdit(tecnico.tecnicoId) }, { onDelete(tecnico) })
+                items(prioridadList) { prioridad ->
+                    PrioridadRow(prioridad, { onEdit(prioridad.prioridadId) }, { onDelete(prioridad) })
                 }
             }
         }
@@ -61,8 +63,8 @@ fun TecnicoListScreen(
 }
 
 @Composable
-private fun TecnicoRow(
-    tecnico: TecnicoEntity,
+private fun PrioridadRow(
+    prioridad: PrioridadEntity,
     onEdit: () -> Unit,
     onDelete: () -> Unit
 ) {
@@ -72,14 +74,14 @@ private fun TecnicoRow(
             .fillMaxWidth()
             .padding(vertical = 8.dp)
     ) {
-        Text(modifier = Modifier.weight(1f), text = tecnico.tecnicoId.toString(), color = Color.Black)
+        Text(modifier = Modifier.weight(1f), text = prioridad.prioridadId.toString(), color = Color.Black)
         Text(
             modifier = Modifier.weight(2f),
-            text = tecnico.nombre,
+            text = prioridad.descripcion,
             style = MaterialTheme.typography.titleMedium,
             color = Color.Black
         )
-        Text(modifier = Modifier.weight(2f), text = tecnico.sueldo.toString(), color = Color.Black)
+        Text(modifier = Modifier.weight(2f), text = prioridad.tiempo.toString(), color = Color.Black)
         IconButton(onClick = onEdit) {
             Icon(Icons.Default.Edit, contentDescription = "Editar", tint = MaterialTheme.colorScheme.primary)
         }
