@@ -1,4 +1,4 @@
-package edu.ucne.registrotecnicos.presentation.tecnico
+package edu.ucne.registrotecnicos.presentation.prioridad
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.ButtonDefaults
@@ -33,88 +32,87 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import edu.ucne.registrotecnicos.data.local.entities.TecnicoEntity
+import edu.ucne.registrotecnicos.data.local.entities.PrioridadEntity
+
 
 @Composable
-fun TecnicoScreen(
-    tecnicoId: Int? = null,
-    viewModel: TecnicosViewModel,
+fun PrioridadScreen(
+    prioridadId: Int? = null,
+    viewModelPrioridad: PrioridadesViewModel,
     navController: NavController,
     function: () -> Unit
-) {
-    var nombre: String by remember { mutableStateOf("") }
-    var sueldo: String by remember { mutableStateOf("") }
+){
+    var descripcion: String by remember { mutableStateOf("") }
+    var tiempo: Int by remember { mutableStateOf(0) }
     var errorMessage: String? by remember { mutableStateOf("") }
-    var editando by remember { mutableStateOf<TecnicoEntity?>(null) }
+    var editando by remember { mutableStateOf<PrioridadEntity?>(null) }
 
-    LaunchedEffect(tecnicoId) {
-        if (tecnicoId != null && tecnicoId > 0) {
-            val tecnico = viewModel.findTecnico(tecnicoId)
-            tecnico?.let {
+    LaunchedEffect(prioridadId) {
+        if (prioridadId != null && prioridadId > 0){
+            val prioridad = viewModelPrioridad.findPrioridad(prioridadId)
+            prioridad?.let {
                 editando = it
-                nombre = it.nombre
-                sueldo = it.sueldo
+                descripcion = it.descripcion
+                tiempo = it.tiempo
             }
         }
     }
-
     Scaffold { innerPadding ->
-        Column(
+        Column (
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
                 .padding(8.dp)
-        ) {
-            Row(
+        ){
+            Row (
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
-            ) {
+            ){
                 if (navController != null){
                     IconButton(
-                        onClick = { navController.popBackStack() },
+                        onClick = {navController.popBackStack()},
                         modifier = Modifier.align(Alignment.CenterVertically)
                     ) {
                         Icon(Icons.Default.ArrowBack, contentDescription = "volver")
                     }
                 }
             }
-            ElevatedCard(
+            ElevatedCard (
                 modifier = Modifier.fillMaxWidth()
-            ) {
-                Column(
+            ){
+                Column (
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(8.dp)
-                ) {
+                ){
                     Spacer(modifier = Modifier.height(32.dp))
-                    Text("Registro de tecnicos $tecnicoId")
+                    Text("Registro de prioridades $prioridadId")
 
                     OutlinedTextField(
-                        value = editando?.tecnicoId?.toString() ?: "0",
+                        value = editando?.prioridadId?.toString() ?: "0",
                         onValueChange = {},
-                        label = { Text("ID Técnico") },
+                        label = {Text("ID Prioridad")},
                         modifier = Modifier.fillMaxWidth(),
                         readOnly = true,
                         enabled = false
                     )
                     OutlinedTextField(
-                        value = nombre,
-                        onValueChange = { nombre = it },
-                        label = { Text("Nombre del técnico") },
+                        value = descripcion,
+                        onValueChange = {descripcion = it},
+                        label = {Text("Descripcion de la prioridad")},
                         modifier = Modifier.fillMaxWidth(),
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedBorderColor = Color.Blue,
-                            unfocusedBorderColor = Color.Gray,
+                            unfocusedTextColor = Color.Gray,
                             focusedLabelColor = Color.Blue
                         )
                     )
-
                     OutlinedTextField(
-                        value = sueldo.toString(),
-                        onValueChange = { newValue ->
-                            sueldo = newValue.toDoubleOrNull()?.toString() ?: ""
+                        value = tiempo.toString(),
+                        onValueChange = {newValue ->
+                            tiempo = newValue.toIntOrNull() ?: 0
                         },
-                        label = { Text("Sueldo del tecnico") },
+                        label = {Text("Tiempo de la prioridad")},
                         modifier = Modifier.fillMaxWidth(),
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedBorderColor = Color.Blue,
@@ -127,48 +125,31 @@ fun TecnicoScreen(
                     errorMessage?.let {
                         Text(text = it, color = Color.Red)
                     }
-                    Row(
+                    Row (
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.Center,
                         verticalAlignment = Alignment.CenterVertically
-                    ) {
+                    ){
                         OutlinedButton(
                             onClick = {
-
-                            },
-                            colors = ButtonDefaults.outlinedButtonColors(
-                                contentColor = Color.Blue
-                            ),
-                            border = BorderStroke(1.dp, Color.Blue),
-                            modifier = Modifier.padding(horizontal = 8.dp)
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Add,
-                                contentDescription = "new button"
-                            )
-                            Text("Nuevo")
-                        }
-                        OutlinedButton(
-                            onClick = {
-                                if (nombre.isBlank()) {
-                                    errorMessage = "El nombre no puede estar vacio."
+                                if (descripcion.isBlank()){
+                                    errorMessage = "La descripcion no puede estar vacia."
+                                    return@OutlinedButton
+                                }
+                                if (tiempo <= 0){
+                                    errorMessage = "Debe asignar un tiempo a la prioridad."
                                     return@OutlinedButton
                                 }
 
-                                if (sueldo.isBlank()) {
-                                    errorMessage = "El sueldo no puede ser cero o menor."
-                                    return@OutlinedButton
-                                }
-                                //crear
-                                viewModel.saveTecnico(
-                                    TecnicoEntity(
-                                        tecnicoId = editando?.tecnicoId,
-                                        nombre = nombre,
-                                        sueldo = sueldo
+                                viewModelPrioridad.savePrioridad(
+                                    PrioridadEntity(
+                                        prioridadId = editando?.prioridadId,
+                                        descripcion = descripcion,
+                                        tiempo = tiempo
                                     )
                                 )
-                                nombre = ""
-                                sueldo = ""
+                                descripcion = ""
+                                tiempo = 0
                                 errorMessage = null
                                 editando = null
 
