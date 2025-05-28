@@ -2,9 +2,10 @@ package edu.ucne.registrotecnicos.data.repository
 
 import edu.ucne.registrotecnicos.data.local.dao.TecnicoDao
 import edu.ucne.registrotecnicos.data.local.entities.TecnicoEntity
+import jakarta.inject.Inject
 import kotlinx.coroutines.flow.Flow
 
-class TecnicosRepository(
+class TecnicosRepository @Inject constructor(
     private val dao: TecnicoDao
 ) {
     suspend fun save(tecnico: TecnicoEntity) = dao.save(tecnico)

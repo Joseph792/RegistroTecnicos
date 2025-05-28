@@ -11,6 +11,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
 import androidx.room.Room
+import dagger.hilt.android.AndroidEntryPoint
 import edu.ucne.registrotecnicos.data.local.database.TecnicoDb
 import edu.ucne.registrotecnicos.data.repository.PrioridadesRepository
 import edu.ucne.registrotecnicos.data.repository.TecnicosRepository
@@ -21,6 +22,7 @@ import edu.ucne.registrotecnicos.presentation.tecnico.TecnicosViewModel
 import edu.ucne.registrotecnicos.presentation.ticket.TicketsViewModel
 import edu.ucne.registrotecnicos.ui.theme.RegistroTecnicosTheme
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     private lateinit var tecnicoDb: TecnicoDb
 
@@ -58,15 +60,6 @@ class MainActivity : ComponentActivity() {
         )
 
         setContent {
-            /*val lifecycleOwner = LocalLifecycleOwner.current
-
-            val ticketList by tecnicoDb.TicketDao().getAll()
-                .collectAsStateWithLifecycle(
-                    initialValue = emptyList(),
-                    lifecycleOwner = lifecycleOwner,
-                    minActiveState = Lifecycle.State.STARTED
-                )*/
-
             RegistroTecnicosTheme {
                 val nav = rememberNavController()
                 Scaffold(
