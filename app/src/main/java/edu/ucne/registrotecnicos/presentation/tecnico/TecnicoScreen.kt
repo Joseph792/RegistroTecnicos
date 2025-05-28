@@ -116,7 +116,7 @@ fun TecnicoBodyScreen(
 
                     OutlinedTextField(
                         value = uiState.sueldo.toString(),
-                        onValueChange = { onEvent(TecnicoEvent.SueldoChange(it))},
+                        onValueChange = { onEvent(TecnicoEvent.SueldoChange(it.toDouble()))},
                         label = { Text("Sueldo del tecnico") },
                         modifier = Modifier.fillMaxWidth(),
                         colors = OutlinedTextFieldDefaults.colors(

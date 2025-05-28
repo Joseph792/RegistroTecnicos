@@ -8,5 +8,5 @@ data class TecnicoEntity(
     @PrimaryKey
     val tecnicoId: Int? = null,
     val nombre: String = "",
-    val sueldo: String = ""
+    val sueldo: Double = 0.0
 )

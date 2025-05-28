@@ -38,7 +38,7 @@ class TecnicosViewModel @Inject constructor(
     //saveTecnico
     private fun save() {
         viewModelScope.launch {
-            if (_uiState.value.nombre.isNullOrBlank() || _uiState.value.sueldo.isNullOrBlank()){
+            if (_uiState.value.nombre.isNullOrBlank() || _uiState.value.sueldo < 0.0){
                 _uiState.update {
                     it.copy(errorMessage = "Campo vacios")
                 }
@@ -54,7 +54,7 @@ class TecnicosViewModel @Inject constructor(
             it.copy(
                 tecnicoId = null,
                 nombre = "",
-                sueldo = "",
+                sueldo = 0.0,
                 errorMessage = null
             )
         }
@@ -69,7 +69,7 @@ class TecnicosViewModel @Inject constructor(
                     it.copy(
                         tecnicoId = tecnico?.tecnicoId,
                         nombre = tecnico?.nombre ?: "",
-                        sueldo = tecnico?.sueldo ?: ""
+                        sueldo = tecnico?.sueldo ?: 0.0
                     )
                 }
             }
@@ -99,7 +99,7 @@ class TecnicosViewModel @Inject constructor(
         }
     }
 
-    private fun onSueldoChange(sueldo: String) {
+    private fun onSueldoChange(sueldo: Double) {
         _uiState.update {
             it.copy(sueldo = sueldo)
         }
@@ -117,5 +117,5 @@ class TecnicosViewModel @Inject constructor(
 fun TecnicoUiState.toEntity() = TecnicoEntity(
     tecnicoId = tecnicoId,
     nombre = nombre ?: "",
-    sueldo = sueldo ?: ""
+    sueldo = sueldo ?: 0.0
 )
