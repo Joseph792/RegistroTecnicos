@@ -2,8 +2,8 @@ package edu.ucne.registrotecnicos.data.repository
 
 import edu.ucne.registrotecnicos.data.local.dao.TicketDao
 import edu.ucne.registrotecnicos.data.local.entities.TicketEntity
-import jakarta.inject.Inject
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
 class TicketsRepository @Inject constructor(
     private val dao: TicketDao
